@@ -1,0 +1,26 @@
+1.Afisati numele, prenumele, cnp-ul si numar de telefon clientilor care au facturi neplatite. Ordonati rezultatel crescator dupa nume,
+apoi descrescator dupa prenume.    -Join pe 4 tabele, ordonari, 2 fct pe date calendaristice, filtrare la nivel de linii
+
+2. Afisati numele, prenumele, salariul si data angajarii muncitorilor care au participat la interventiile survenite in urma plangerilor
+depuse de clientul al carui nume se termina cu 'a' si prenumele incepe cu 'm'. (Daca nu se cunosc informatii despre muncitorul afisat se vor afisa NULL in locul numelui
+si prenumelui)    -subcerere nesincronizata pe 4 tabele, WITH, DECODE, 2 functii pe siruri de caractere
+
+
+3. Afisati numele, prenumele, salariul si rating-ul muncitorilor care au salariul mai mare decat salariul al celor ce au fost angajati in 
+acelasi an cu ei si care au printre specializari si specializarea de 'Sofer' (specializarea de 'Sofer'nu trebuie sa le apartina muncitorilor 
+afisati, ci muncitorilor angajati in acelasi an cu muncitorul afisat). Se vor afisa datele precizate mai sus numai daca avem informatii
+complete despre muncitorul respectiv (adica cunoastem informatii despre acesta, deci cunoastem numele si prenumele acestuia)
+--subcerere sincronizata pe 3 tabele, NVL
+
+4. Afisati denumirea, salariul minim, mediu, maxim si numarul angajatilor pentru fiecare specializare care are minim 2 angajati
+
+SELECT DISTINCT s.nume_specializare AS "Nume specializare", MIN(salariu) AS "Salariu minim", MAX(salariu) AS "Salariu maxim", ROUND(AVG(salariu)) AS "Salariu mediu", COUNT(*) AS "Numar angajati"
+FROM Muncitori m, Specializari_Muncitori sp, Specializari s
+WHERE m.cod_muncitor = sp.cod_muncitor
+AND sp.cod_specializare = s.cod_specializare
+GROUP BY s.cod_specializare, s.nume_specializare
+HAVING COUNT(*) > 1;         --grupari de date, functii grup, filtrare la nivel de grupuri
+
+5. Se afiseaza numele, prenumele, data angajarii, ratingul, salariul actual si salariul dupa marire a primilor 5 angajati cu cel mai mare rating. Salariul urmeaza sa se 
+mareasca numai angajatilor care se afla in top 5 dupa rating astfel: deloc daca este angajat dupa 2021 (inclusiv), cu 10% daca este angajat din 2020, cu 20% daca este
+angajat din 2019, cu 30% daca este angajat din 2018, cu 40% daca este angajat din 2017, cu 50% daca este angajat inainte de 2017.       --CASE

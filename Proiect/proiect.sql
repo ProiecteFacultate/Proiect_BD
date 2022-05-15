@@ -30,6 +30,9 @@ VALUES (9, 'Dragos', 'Andrei', '5015730458972', '0739503182');
 INSERT INTO Informatii_Clienti 
 VALUES (10, 'Ionut', 'Dima', '5072490567120', '0719023567');
 
+INSERT INTO Informatii_Clienti 
+VALUES (11, 'Ion', 'Matei', '5073905481235', '0709326784');
+
 SELECT * 
 FROM Informatii_Clienti;
 
@@ -73,6 +76,13 @@ VALUES (9, 7, 'andreeaMaria', '987654321', 'maria_andreea@gmail.ro');
 INSERT INTO Clienti 
 VALUES (10, NULL, 'kingFrone', 'gigel34', 'frone34@outlook.com');
 
+
+INSERT INTO Clienti 
+VALUES (11, 2, 'mexicanu', 'meml34', 'mexicanu@outlook.com');
+INSERT INTO Clienti 
+VALUES (12, 11, 'MAtei321', '43mat', 'matei@outlook.com');
+
+
 SELECT * 
 FROM Clienti;
 
@@ -112,6 +122,8 @@ VALUES (9, 5);
 INSERT INTO informatii_bancare 
 VALUES (10, 4, 2700, 4000);
 
+INSERT INTO informatii_bancare 
+VALUES (11, 12, 2400, 3500);
 
 SELECT *
 FROM Informatii_Bancare;
@@ -152,6 +164,9 @@ INSERT INTO Carduri_Bancare
 VALUES (9, 9, 5, '7437217457897523', TO_DATE('08-NOV-2023', 'DD-MON-YYYY'), 435);
 INSERT INTO Carduri_Bancare 
 VALUES (10, 10, 4, '3242356343473442', TO_DATE('17-APR-2028', 'DD-MON-YYYY'), 543);
+
+INSERT INTO Carduri_Bancare 
+VALUES (11, 11, 12, '3202356343473569', TO_DATE('26-DEC-2030', 'DD-MON-YYYY'), 206);
 
 
 SELECT *
@@ -195,6 +210,17 @@ INSERT INTO Adrese
 VALUES (3, 10, 'Romania', 'Cluj', 'Strada Clujului', 8765);
 
 
+INSERT INTO Adrese 
+VALUES (1, 2, 'Romania', 'Arad', 'Strda Aradului', 65);
+INSERT INTO Adrese 
+VALUES (2, 2, 'Romania', 'Bucuresti', 'Crangasi', 654);
+INSERT INTO Adrese 
+VALUES (1, 9, 'Romania', 'Buzau', 'Strda Buzaului', 23);
+INSERT INTO Adrese 
+VALUES (1, 11, 'Romania', 'Botosani', 'Strda Botosani', 653);
+INSERT INTO Adrese 
+VALUES (1, 12, 'Romania', 'Vaslui', 'Strda Vslui', 13);
+
 SELECT *
 FROM Adrese;
 
@@ -236,6 +262,16 @@ INSERT INTO Facturi (cod_factura, cod_adresa, cod_client, total, data_eliberare,
 VALUES (2, 2, 10, 890, TO_DATE('27-DEC-2024', 'DD-MON-YYYY'), TO_DATE('08-APR-2027', 'DD-MON-YYYY'));
 INSERT INTO Facturi (cod_factura, cod_adresa, cod_client, total, data_eliberare, termen_plata)
 VALUES (3, 2, 10, 510, TO_DATE('03-APR-2023', 'DD-MON-YYYY'), TO_DATE('22-APR-2025', 'DD-MON-YYYY'));
+
+
+INSERT INTO Facturi
+VALUES (1, 1, 2, 280, TO_DATE('24-SEP-2020', 'DD-MON-YYYY'), TO_DATE('27-APR-2022', 'DD-MON-YYYY'), 'Neplatit');
+INSERT INTO Facturi
+VALUES (1, 1, 9, 320, TO_DATE('14-DEC-2022', 'DD-MON-YYYY'), TO_DATE('25-MAR-2025', 'DD-MON-YYYY'), 'Neplatit');
+INSERT INTO Facturi
+VALUES (1, 1, 11, 765, TO_DATE('05-FEB-2022', 'DD-MON-YYYY'), TO_DATE('02-MAY-2024', 'DD-MON-YYYY'), 'Neplatit');
+INSERT INTO Facturi
+VALUES (1, 1, 12, 180, TO_DATE('19-APR-2021', 'DD-MON-YYYY'), TO_DATE('02-APR-2022', 'DD-MON-YYYY'), 'Neplatit');
 
 
 SELECT *
@@ -317,6 +353,13 @@ VALUES (9, 'Marius', 'Lica', '5021905623895', '0701938567');
 INSERT INTO Informatii_Muncitori
 VALUES (10, 'Sorin', 'Mircea', '5023095671834', '0789042175');
 
+INSERT INTO Informatii_Muncitori
+VALUES (11, 'Miruna', 'Mircea', '5023095671309', '0789042111');
+INSERT INTO Informatii_Muncitori
+VALUES (12, 'Ionut', 'Ionel', '5010495671309', '0709342111');
+INSERT INTO Informatii_Muncitori
+VALUES (13, 'Vasile', 'Vasilievici', '5023095673091', '0789043331');
+
 
 SELECT *
 FROM Informatii_Muncitori;
@@ -358,6 +401,12 @@ VALUES (9, 9, 1700, TO_DATE('08-MAR-2021', 'DD-MON-YYYY'), 30);
 INSERT INTO Muncitori
 VALUES (10, 3, 1600, TO_DATE('25-MAY-2017', 'DD-MON-YYYY'), NULL);
 
+INSERT INTO Muncitori
+VALUES (11, 11, 1200, TO_DATE('13-DEC-2020', 'DD-MON-YYYY'), 456);
+INSERT INTO Muncitori
+VALUES (12, 12, 2000, TO_DATE('24-SEP-2020', 'DD-MON-YYYY'), 555);
+INSERT INTO Muncitori
+VALUES (13, 13, 1300, TO_DATE('13-DEC-2017', 'DD-MON-YYYY'), 456);
 
 SELECT *
 FROM Muncitori;
@@ -444,6 +493,14 @@ VALUES (10, 2);
 INSERT INTO Specializari_Muncitori
 VALUES (10, 8);
 
+INSERT INTO Specializari_Muncitori
+VALUES (1, 2);
+INSERT INTO Specializari_Muncitori
+VALUES (11, 2);
+INSERT INTO Specializari_Muncitori
+VALUES (12, 2);
+INSERT INTO Specializari_Muncitori
+VALUES (13, 2);
 
 SELECT *
 FROM Specializari_Muncitori;
@@ -541,6 +598,9 @@ SELECT *
 FROM Documente;
 
 
+
+
+
 ALTER TABLE Informatii_Bancare
 DROP CONSTRAINT FK_Cod_Clienti;
 DROP TABLE Informatii_Clienti;
@@ -552,3 +612,119 @@ DROP TABLE Facturi;
 DROP TABLE Plangeri;
 DROP TABLE Muncitori;
 DROP TABLE Informatii_Muncitori;
+
+
+
+
+--------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------------------------
+
+
+SELECT *
+FROM FACTURI;
+
+--CERERE 1
+
+
+SELECT DISTINCT ic.nume, ic.prenume, ic.cnp, ic.numar_telefon
+FROM Informatii_clienti ic
+JOIN Clienti c ON ic.cod_informatii_client = c.cod_informatii_client
+JOIN Informatii_bancare ib ON c.cod_client = ib.cod_client
+JOIN Carduri_Bancare cb ON cb.cod_informatii_bancare = ib.cod_informatii_bancare
+                        AND cb.cod_client = ib.cod_client
+JOIN Adrese a ON a.cod_client = c.cod_client
+JOIN Facturi f ON a.cod_adresa = f.cod_adresa
+               AND a.cod_client = f.cod_client
+WHERE f.status = 'Neplatit'
+AND TO_NUMBER(EXTRACT(DAY FROM (NEXT_DAY(cb.data_expirare_card, 'Monday')))) <= 30
+ORDER BY ic.nume ASC, ic.prenume DESC;
+
+
+--CERERE 2
+WITH 
+cod_mun_cautati AS (SELECT DISTINCT d.cod_muncitor
+                    FROM Documente d, Clienti c, Plangeri p
+                    WHERE d.cod_client = p.cod_client
+                    AND p.cod_client = c.cod_client
+                    AND c.cod_informatii_client = (SELECT cod_informatii_client
+                                                   FROM Informatii_clienti
+                                                   WHERE UPPER(nume) LIKE('%A')
+                                                   AND LOWER(prenume) LIKE('m%'))),
+cod_inf_munc_cautati AS (SELECT m.cod_muncitor, im.cod_informatii_muncitor
+                         FROM Muncitori m, Informatii_muncitori im
+                         WHERE m.cod_muncitor in (SELECT cod_muncitor
+                                                  FROM cod_mun_cautati)
+                                                  AND m.cod_informatii_muncitor = im.cod_informatii_muncitor)
+SELECT DECODE((SELECT cod_informatii_muncitor
+               FROM cod_inf_munc_cautati
+               WHERE cod_inf_munc_cautati.cod_muncitor = m.cod_muncitor), NULL, NULL, (SELECT nume
+                                                                                       FROM Informatii_muncitori im, cod_inf_munc_cautati imc
+                                                                                       WHERE im.cod_informatii_muncitor = imc.cod_informatii_muncitor
+                                                                                       AND imc.cod_muncitor = m.cod_muncitor)) AS "Nume",              DECODE((SELECT cod_informatii_muncitor
+                                                                                                                                                               FROM cod_inf_munc_cautati
+                                                                                                                                                               WHERE cod_inf_munc_cautati.cod_muncitor = m.cod_muncitor), NULL, NULL, (SELECT prenume
+                                                                                                                                                                                                                                       FROM Informatii_muncitori im, cod_inf_munc_cautati imc
+                                                                                                                                                                                                                                       WHERE im.cod_informatii_muncitor = imc.cod_informatii_muncitor
+                                                                                                                                                                                                                                       AND imc.cod_muncitor = m.cod_muncitor)) AS "Prenume",              m.salariu, m.data_angajare
+FROM Muncitori m
+WHERE m.cod_muncitor in (SELECT *
+                         FROM cod_mun_cautati);
+                         
+                         
+--CERERE 3
+
+
+SELECT im.nume, im.prenume, extern.salariu, extern.data_angajare
+FROM Muncitori extern, Informatii_Muncitori im
+WHERE extern.salariu > NVL((SELECT AVG(m.salariu)
+                            FROM Muncitori m, Specializari_Muncitori sp, Specializari s
+                            WHERE EXTRACT(YEAR FROM extern.data_angajare) = EXTRACT(YEAR FROM m.data_angajare)
+                            AND m.cod_muncitor = sp.cod_muncitor
+                            AND sp.cod_specializare = s.cod_specializare
+                            AND s.nume_specializare = 'Sofer'), 0)
+AND extern.cod_informatii_muncitor IS NOT NULL 
+AND extern.cod_informatii_muncitor = im.cod_informatii_muncitor;
+
+
+
+--CERERE 4
+
+SELECT DISTINCT s.nume_specializare AS "Nume specializare", MIN(salariu) AS "Salariu minim", MAX(salariu) AS "Salariu maxim", ROUND(AVG(salariu)) AS "Salariu mediu", COUNT(*) AS "Numar angajati"
+FROM Muncitori m, Specializari_Muncitori sp, Specializari s
+WHERE m.cod_muncitor = sp.cod_muncitor
+AND sp.cod_specializare = s.cod_specializare
+GROUP BY s.cod_specializare, s.nume_specializare
+HAVING COUNT(*) > 1;
+
+
+--CERERE 5
+
+WITH 
+aux AS (SELECT cod_muncitor, cod_informatii_muncitor, salariu, data_angajare, rating
+        FROM Muncitori 
+        WHERE rating IS NOT NULL
+        ORDER BY rating DESC)
+        SELECT DECODE(a.cod_informatii_muncitor, NULL, NULL, (SELECT im.nume
+                                                              FROM Informatii_Muncitori im
+                                                              WHERE im.cod_informatii_muncitor = a.cod_informatii_muncitor)) AS "Nume", DECODE(a.cod_informatii_muncitor, NULL, NULL, (SELECT im.prenume
+                                                                                                                                                                                       FROM Informatii_Muncitori im
+                                                                                                                                                                                       WHERE im.cod_informatii_muncitor = a.cod_informatii_muncitor)) AS "Prenume", data_angajare AS "Data Angajare", rating AS "Rating", salariu AS "Salariu actual",
+CASE TO_NUMBER(EXTRACT (YEAR FROM data_angajare))
+WHEN 2020
+THEN salariu 
+WHEN 2021 
+THEN salariu 
+WHEN 2020
+THEN salariu * 1.1
+WHEN 2019
+THEN salariu * 1.2
+WHEN 2018
+THEN salariu * 1.3
+WHEN 2017
+THEN salariu * 1.4
+ELSE salariu * 1.5
+END AS "Salariu dupa marire"
+FROM aux a
+WHERE ROWNUM <= 5;
+
