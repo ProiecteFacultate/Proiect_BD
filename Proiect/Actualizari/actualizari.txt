@@ -1,0 +1,5 @@
+1. Cresteti cu 20% salariul muncitorilor care au participat la interventii survenite in urma plangerilor depuse de clientul cu numele "Ioana" si prenumele "Cristina".
+2. Stergeti facturile cu statusul 'Neplatit' ale clientilor despre care nu se cunosc informatii (au cod_informatii_client NULL) sau despre care se cunosc informatii si al
+caror numar de telefon incepe cu "073".
+3. Stergeti adresele pentru care nu este emisa nici-o factura si despre al caror proprietar (clientul care detine respectiva adresa) nu se cunosc informatii 
+(are cod_informatii_client NULL).
