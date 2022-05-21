@@ -1,0 +1,259 @@
+--EX 12:
+
+--CERERE 1:
+
+--Enunt: Afisati numele, prenumele, cnp-ul si numarul de telefon al clientilor care au facturi neplatite si care au cel putin un card bancar pentru care ziua de luni ce urmeaza dupa
+--data de expirare este inainte sau egala cu ziua de 30 a lunii. Ordonati rezultatele crescator dupa nume, apoi descrescator dupa prenume. Daca pentru un client se respecta 
+--conditiile de mai sus, dar nu se cunosc informatii personale despre acesta (cod_informatii_client pentru respectivul client este NULL), atunci clientul nu va fi afisat.
+
+SELECT DISTINCT ic.nume, ic.prenume, ic.cnp, ic.numar_telefon
+FROM Informatii_clienti ic
+JOIN Clienti c ON ic.cod_informatii_client = c.cod_informatii_client
+JOIN Informatii_bancare ib ON c.cod_client = ib.cod_client
+JOIN Carduri_Bancare cb ON cb.cod_informatii_bancare = ib.cod_informatii_bancare
+                        AND cb.cod_client = ib.cod_client
+JOIN Adrese a ON a.cod_client = c.cod_client
+JOIN Facturi f ON a.cod_adresa = f.cod_adresa
+               AND a.cod_client = f.cod_client
+WHERE f.status = 'Neplatit'
+AND TO_NUMBER(EXTRACT(DAY FROM (NEXT_DAY(cb.data_expirare_card, 'Monday')))) <= 30
+ORDER BY ic.nume ASC, ic.prenume DESC; 
+
+
+--CERERE 2:
+
+--Enunt: Afisati numele, prenumele, salariul si data angajarii muncitorilor care au participat la interventiile survenite in urma plangerilor depuse de clientul al carui 
+--nume se termina cu 'a' si prenumele incepe cu 'M'. Daca nu se cunosc informatii despre muncitorul afisat (cod_informatii_muncitor pentru respectivul muncitor este NULL)
+--se vor afisa NULL in locul numelui si prenumelui.
+
+WITH 
+cod_mun_cautati AS (SELECT DISTINCT d.cod_muncitor
+                    FROM Documente d, Clienti c, Plangeri p
+                    WHERE d.cod_client = p.cod_client
+                    AND p.cod_client = c.cod_client
+                    AND c.cod_informatii_client = (SELECT cod_informatii_client
+                                                   FROM Informatii_clienti
+                                                   WHERE UPPER(nume) LIKE('%A')
+                                                   AND LOWER(prenume) LIKE('m%'))),
+cod_inf_munc_cautati AS (SELECT m.cod_muncitor, im.cod_informatii_muncitor
+                         FROM Muncitori m, Informatii_muncitori im
+                         WHERE m.cod_muncitor in (SELECT cod_muncitor
+                                                  FROM cod_mun_cautati)
+                         AND m.cod_informatii_muncitor = im.cod_informatii_muncitor)
+SELECT DECODE((SELECT cod_informatii_muncitor
+               FROM cod_inf_munc_cautati
+               WHERE cod_inf_munc_cautati.cod_muncitor = m.cod_muncitor), NULL, NULL, (SELECT nume
+                                                                                       FROM Informatii_muncitori im, cod_inf_munc_cautati imc
+                                                                                       WHERE im.cod_informatii_muncitor = imc.cod_informatii_muncitor
+                                                                                       AND imc.cod_muncitor = m.cod_muncitor)) AS "Nume",              DECODE((SELECT cod_informatii_muncitor
+                                                                                                                                                               FROM cod_inf_munc_cautati
+                                                                                                                                                               WHERE cod_inf_munc_cautati.cod_muncitor = m.cod_muncitor), NULL, NULL, (SELECT prenume
+                                                                                                                                                                                                                                       FROM Informatii_muncitori im, cod_inf_munc_cautati imc
+                                                                                                                                                                                                                                       WHERE im.cod_informatii_muncitor = imc.cod_informatii_muncitor
+                                                                                                                                                                                                                                       AND imc.cod_muncitor = m.cod_muncitor)) AS "Prenume",              m.salariu, m.data_angajare
+FROM Muncitori m
+WHERE m.cod_muncitor in (SELECT *
+                         FROM cod_mun_cautati);
+
+
+
+
+
+--CERERE 3:
+
+--Enunt: Afisati numele, prenumele, salariul si data angajarii muncitorilor care au salariul mai mare decat media salariilor celor ce au fost angajati in acelasi an cu ei 
+--si care au printre specializari si specializarea de 'Sofer' (specializarea de 'Sofer'nu trebuie sa le apartina muncitorilor afisati, ci muncitorilor angajati in acelasi 
+--an cu muncitorul afisat, iar daca nu exista niciun Sofer angajat in acelasi an cu angajatul respectiv atunci media salariilor va fi 0). Se vor afisa datele precizate mai
+--sus numai daca avem informatii complete despre muncitorul respectiv (adica daca cod_informatii_muncitor pentru respectivul muncitor nu este NULL).
+
+
+SELECT im.nume, im.prenume, extern.salariu, extern.data_angajare
+FROM Muncitori extern, Informatii_Muncitori im
+WHERE extern.salariu > NVL((SELECT AVG(m.salariu)
+                            FROM Muncitori m, Specializari_Muncitori sp, Specializari s
+                            WHERE EXTRACT(YEAR FROM extern.data_angajare) = EXTRACT(YEAR FROM m.data_angajare)
+                            AND m.cod_muncitor = sp.cod_muncitor
+                            AND sp.cod_specializare = s.cod_specializare
+                            AND s.nume_specializare = 'Sofer'), 0)
+AND extern.cod_informatii_muncitor IS NOT NULL 
+AND extern.cod_informatii_muncitor = im.cod_informatii_muncitor;
+
+
+
+
+--CERERE 4:
+
+--Enunt: Afisati denumirea, salariul minim, mediu, maxim si numarul angajatilor pentru fiecare specializare care are minim 2 angajati.
+
+
+SELECT DISTINCT s.nume_specializare AS "Nume specializare", MIN(salariu) AS "Salariu minim", MAX(salariu) AS "Salariu maxim", ROUND(AVG(salariu)) AS "Salariu mediu", COUNT(*) AS "Numar angajati"
+FROM Muncitori m, Specializari_Muncitori sp, Specializari s
+WHERE m.cod_muncitor = sp.cod_muncitor
+AND sp.cod_specializare = s.cod_specializare
+GROUP BY s.cod_specializare, s.nume_specializare
+HAVING COUNT(*) > 1
+ORDER BY COUNT(*) ASC, ROUND(AVG(salariu)) DESC;
+
+
+
+
+--CERERE 5:
+
+--Enunt: Sa se afiseaze numele, prenumele, data angajarii, ratingul, salariul actual si salariul dupa marire a primilor 5 angajati cu cel mai mare rating. Salariul urmeaza sa se 
+--mareasca numai angajatilor care se afla in top 5 dupa rating astfel: deloc daca este angajat dupa 2021 (inclusiv), cu 10% daca este angajat din 2020, cu 20% daca este
+--angajat din 2019, cu 30% daca este angajat din 2018, cu 40% daca este angajat din 2017, cu 50% daca este angajat inainte de 2017.
+
+
+WITH 
+aux AS (SELECT cod_muncitor, cod_informatii_muncitor, salariu, data_angajare, rating
+        FROM Muncitori 
+        WHERE rating IS NOT NULL
+        ORDER BY rating DESC)
+SELECT DECODE(a.cod_informatii_muncitor, NULL, NULL, (SELECT im.nume
+                                                      FROM Informatii_Muncitori im
+                                                      WHERE im.cod_informatii_muncitor = a.cod_informatii_muncitor)) AS "Nume",
+                                                      
+DECODE(a.cod_informatii_muncitor, NULL, NULL, (SELECT im.prenume
+                                               FROM Informatii_Muncitori im
+                                               WHERE im.cod_informatii_muncitor = a.cod_informatii_muncitor)) AS "Prenume", 
+                                               
+data_angajare AS "Data Angajare", rating AS "Rating", salariu AS "Salariu actual",
+CASE TO_NUMBER(EXTRACT (YEAR FROM data_angajare))
+WHEN 2020
+THEN salariu 
+WHEN 2021 
+THEN salariu 
+WHEN 2020
+THEN salariu * 1.1
+WHEN 2019
+THEN salariu * 1.2
+WHEN 2018
+THEN salariu * 1.3
+WHEN 2017
+THEN salariu * 1.4
+ELSE salariu * 1.5
+END AS "Salariu dupa marire"
+FROM aux a
+WHERE ROWNUM <= 5;
+
+
+
+
+
+
+--EX 13:
+
+--ACTUALIZARE 1:
+
+--Enunt: Cresteti cu 20% salariul muncitorilor care au participat la interventii survenite in urma plangerilor depuse de clientul cu numele "Ioana" si prenumele "Cristina".
+
+UPDATE Muncitori 
+SET salariu = salariu * 1.2
+WHERE cod_muncitor in (SELECT DISTINCT m.cod_muncitor
+                       FROM Muncitori m, Documente d, Plangeri p, Clienti c, Informatii_Clienti ic
+                       WHERE m.cod_muncitor = d.cod_muncitor
+                       AND d.cod_plangere = p.cod_plangere
+                       AND d.cod_client = p.cod_client
+                       AND p.cod_client = c.cod_client
+                       AND c.cod_informatii_client = (SELECT cod_informatii_client
+                                                      FROM Informatii_Clienti
+                                                      WHERE nume = 'Ioana'
+                                                      AND prenume = 'Cristina'));
+
+
+--STERGERE 1:
+
+--Enunt: Stergeti facturile cu statusul 'Neplatit' ale clientilor despre care nu se cunosc informatii (au cod_informatii_client NULL) sau despre care se cunosc informatii si al
+--caror numar de telefon incepe cu "073".
+
+
+DELETE FROM Facturi
+WHERE cod_client in (SELECT DISTINCT c.cod_client
+                     FROM Clienti c, Informatii_Clienti ic, Facturi f
+                     WHERE f.cod_client = c.cod_client
+                     AND (c.cod_informatii_client IS NULL
+                          OR (c.cod_informatii_client = ic.cod_informatii_client
+                              AND  ic.numar_telefon LIKE('073%'))))
+AND status = 'Neplatit';
+
+
+
+--STERGERE 2:
+
+--Enunt: Stergeti adresele pentru care nu este emisa nici-o factura si despre al caror proprietar (clientul care detine respectiva adresa) nu se cunosc informatii 
+--(are cod_informatii_client NULL).
+
+
+DELETE FROM Adrese a1
+WHERE (a1.cod_client NOT IN (SELECT cod_client
+                             FROM Facturi)
+       OR (a1.cod_adresa NOT IN (SELECT cod_adresa 
+                                 FROM Facturi
+                                 WHERE cod_client = a1.cod_client)))
+AND (SELECT cod_informatii_client
+     FROM Clienti
+     WHERE cod_client = a1.cod_client) IS NULL;
+
+
+
+
+
+--EX 16:
+
+--CERERE CE UTILIZEAZA OUTER-JOIN:
+
+--Enunt: Afisati numele, prenumele, cnp-ul si numarul de telefon al clientilor care detin carduri bancare care expira inainte de 1 decembrie 2028.
+
+SELECT DISTINCT c.cod_client, c.cod_informatii_client, ic.nume, ic.prenume, ic.cnp, ic.numar_telefon
+FROM Carduri_bancare cb
+LEFT OUTER JOIN Informatii_Bancare ib
+ON cb.cod_informatii_bancare = ib.cod_informatii_bancare
+   AND cb.cod_client = ib.cod_client
+LEFT OUTER JOIN Clienti c
+ON ib.cod_client = c.cod_client
+LEFT OUTER JOIN informatii_clienti ic
+ON c.cod_informatii_client = ic.cod_informatii_client
+WHERE cb.data_expirare_card < TO_DATE('1-DEC-2028', 'DD-MON-YYYY');
+
+
+
+
+--CERERE CE UTILIZEAZA DIVISION 1:
+
+--Enunt: Selectati codurile muncitorilor atasati tuturor meseriilor a caror meserie are numele mai scurt de 10 litere.
+
+SELECT DISTINCT sp.cod_muncitor
+FROM Specializari_Muncitori sp
+WHERE NOT EXISTS (SELECT 1
+                  FROM Specializari s
+                  WHERE LENGTH(s.nume_specializare) < 10
+                  AND NOT EXISTS (SELECT 1
+                                  FROM Specializari_Muncitori sp2
+                                  WHERE s.cod_specializare = sp2.cod_specializare
+                                  AND sp2.cod_muncitor = sp.cod_muncitor));
+
+
+
+--CERERE CE UTILIZEAZA DIVISION 2:
+
+--Enunt: Selectati codurile clientilor care au adrese in Romania si pentru fiecare dintre aceste adrese sa exista cel putin o factura emisa.
+
+SELECT DISTINCT c.cod_client
+FROM Clienti c
+WHERE NOT EXISTS (SELECT 1
+                  FROM Adrese a
+                  WHERE a.tara = 'Romania'
+                  AND a.cod_client = c.cod_client
+                  AND NOT EXISTS (SELECT 1
+                                  FROM Facturi f
+                                  WHERE f.cod_adresa = a.cod_adresa
+                                  AND f.cod_client = a.cod_client))
+AND EXISTS (SELECT 1
+            FROM Adrese a2
+            WHERE a2.tara = 'Romania'
+            AND a2.cod_client = c.cod_client);
+
+
+
+
+
